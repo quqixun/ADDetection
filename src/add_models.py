@@ -11,6 +11,7 @@ class ADDModels(object):
     def __init__(self,
                  model_name="pyramid",
                  input_shape=[112, 96, 96, 1],
+                 scale="all",
                  pooling="max",
                  l2_coeff=5e-5,
                  drop_rate=0.5,
@@ -20,6 +21,7 @@ class ADDModels(object):
         '''
 
         self.input_shape = input_shape
+        self.scale = 5 if scale == "all" else scale
         self.pooling = pooling
         self.l2_coeff = l2_coeff
         self.drop_rate = drop_rate
@@ -99,35 +101,50 @@ class ADDModels(object):
         # 7 * 6 * 6 * 256
 
         conv5 = self._conv3d(conv4_bn, 256, 3, name="conv5")
-        conv5_up = UpSampling3D((2, 2, 2), name="conv5_up")(conv5)
-        # 14 * 12 * 12 * 256
-
-        sum1 = Add(name="sum1")([conv4, conv5_up])
-        sum1_bn = BatchNormalization(momentum=self.bn_momentum, name="sum1_bn")(sum1)
-        conv6 = self._conv3d(sum1_bn, 128, 3, name="conv6")
-        conv6_up = UpSampling3D((2, 2, 2), name="conv6_up")(conv6)
-        # 28 * 24 * 24 * 128
-
-        sum2 = Add(name="sum2")([conv3, conv6_up])
-        sum2_bn = BatchNormalization(momentum=self.bn_momentum, name="sum2_bn")(sum2)
-        conv7 = self._conv3d(sum2_bn, 64, 3, name="conv7")
-        conv7_up = UpSampling3D((2, 2, 2), name="conv7_up")(conv7)
-        # 56 * 48 * 48 * 64
-
-        sum3 = Add(name="sum3")([conv2, conv7_up])
-        sum3_bn = BatchNormalization(momentum=self.bn_momentum, name="sum3_bn")(sum3)
-        conv8 = self._conv3d(sum3_bn, 32, 3, name="conv8")
-        # 56 * 48 * 48 * 32
-
+        # 7 * 6 * 6 * 256
         fts1 = self._extract_features(conv5, name="fc1_1")  # 256    -->   256
-        fts2 = self._extract_features(conv6, name="fc1_2")  # 1024   -->   256
-        fts3 = self._extract_features(conv7, name="fc1_3")  # 4096   -->   256
-        fts4 = self._extract_features(conv8, name="fc1_4")  # 16384  -->   256
+        fts_used = fts1
 
-        fts = Concatenate(name="fts_all")([fts1, fts2, fts3, fts4])  # 1024
-        fts_dp = Dropout(rate=self.drop_rate, name="fts_all_dp")(fts)
-        fc2 = self._dense(fts_dp, 256, "relu", name="fc2")
-        fc2_bn = BatchNormalization(momentum=self.bn_momentum, name="fc2_bn")(fc2)
+        if self.scale > 1:
+            conv5_up = UpSampling3D((2, 2, 2), name="conv5_up")(conv5)
+            # 14 * 12 * 12 * 256
+
+            sum1 = Add(name="sum1")([conv4, conv5_up])
+            sum1_bn = BatchNormalization(momentum=self.bn_momentum, name="sum1_bn")(sum1)
+            conv6 = self._conv3d(sum1_bn, 128, 3, name="conv6")
+            # 14 * 12 * 12 * 128
+            fts2 = self._extract_features(conv6, name="fc1_2")  # 1024   -->   256
+            fts_used = fts2
+
+        if self.scale > 2:
+            conv6_up = UpSampling3D((2, 2, 2), name="conv6_up")(conv6)
+            # 28 * 24 * 24 * 128
+
+            sum2 = Add(name="sum2")([conv3, conv6_up])
+            sum2_bn = BatchNormalization(momentum=self.bn_momentum, name="sum2_bn")(sum2)
+            conv7 = self._conv3d(sum2_bn, 64, 3, name="conv7")
+            # 28 * 24 * 24 * 64
+            fts3 = self._extract_features(conv7, name="fc1_3")  # 4096   -->   256
+            fts_used = fts3
+
+        if self.scale > 3:
+            conv7_up = UpSampling3D((2, 2, 2), name="conv7_up")(conv7)
+            # 56 * 48 * 48 * 64
+
+            sum3 = Add(name="sum3")([conv2, conv7_up])
+            sum3_bn = BatchNormalization(momentum=self.bn_momentum, name="sum3_bn")(sum3)
+            conv8 = self._conv3d(sum3_bn, 32, 3, name="conv8")
+            # 56 * 48 * 48 * 32
+            fts4 = self._extract_features(conv8, name="fc1_4")  # 16384  -->   256
+            fts_used = fts4
+
+        if self.scale > 4:
+            fts = Concatenate(name="fts_all")([fts1, fts2, fts3, fts4])  # 1024
+            fts_dp = Dropout(rate=self.drop_rate, name="fts_all_dp")(fts)
+            fc2 = self._dense(fts_dp, 256, "relu", name="fc2")
+            fc2_bn = BatchNormalization(momentum=self.bn_momentum, name="fc2_bn")(fc2)
+        else:
+            fc2_bn = fts_used
 
         fc3 = self._dense(fc2_bn, 2, "softmax", name="fc3")  # 2
         model = Model(inputs=inputs, outputs=fc3)
@@ -140,6 +157,7 @@ if __name__ == "__main__":
 
     model = ADDModels(model_name="pyramid",
                       input_shape=[112, 96, 96, 1],
+                      scale=5,
                       pooling="max",
                       l2_coeff=5e-5,
                       drop_rate=0.5,
