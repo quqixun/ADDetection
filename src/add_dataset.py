@@ -228,7 +228,7 @@ class ADDDataset(object):
 if __name__ == "__main__":
 
     parent_dir = os.path.dirname(os.getcwd())
-    data_dir = os.path.join(parent_dir, "data", "ADNI_gz")
+    data_dir = os.path.join(parent_dir, "data", "adni")
     ad_dir = os.path.join(data_dir, "AD")
     nc_dir = os.path.join(data_dir, "NC")
 
