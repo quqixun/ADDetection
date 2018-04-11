@@ -62,6 +62,12 @@ class ADDSegment(object):
             nib.save(nib.Nifti1Image(data, affine), path)
             return
 
+        # def mask(name, label):
+        #     data = np.multiply(volume, (seg == label) * 1.0)
+        #     dst_path = os.path.join(src_dir, name)
+        #     save_nii(data, dst_path, affine)
+        #     return
+
         file_name = os.listdir(src_dir)[0]
         src_path = os.path.join(src_dir, file_name)
 
@@ -74,6 +80,13 @@ class ADDSegment(object):
                         stderr=subprocess.STDOUT)
         # dst_dir = os.path.dirname(dst_prefix)
         volume, affine = load_nii(src_path)
+        seg_name = [p for p in os.listdir(dst_dir) if "seg" in p][0]
+        seg, _ = load_nii(os.path.join(dst_dir, seg_name))
+
+        # mask("csf.nii.gz", 1)
+        # mask("gm.nii.gz", 2)
+        # mask("wm.nii.gz", 3)
+
         for scan in os.listdir(dst_dir):
             mask_path = os.path.join(dst_dir, scan)
             if "pve_0" in scan:
@@ -91,6 +104,7 @@ class ADDSegment(object):
                 wm = np.multiply(volume, mask)
                 dst_path = os.path.join(src_dir, "wm.nii.gz")
                 save_nii(wm, dst_path, affine)
+
         shutil.rmtree(dst_dir)
 
         return
@@ -99,9 +113,9 @@ class ADDSegment(object):
 if __name__ == "__main__":
 
     parent_dir = os.path.dirname(os.getcwd())
-    data_dir = os.path.join(parent_dir, "data", "ADNI")
+    data_dir = os.path.join(parent_dir, "data", "ADNI_gz")
     ad_dir = os.path.join(data_dir, "AD")
     nc_dir = os.path.join(data_dir, "NC")
 
     seg = ADDSegment(ad_dir, nc_dir)
-    seg.run(processes=6)
+    seg.run(processes=-1)
