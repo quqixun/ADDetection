@@ -2,7 +2,6 @@
 	"data_dir": "data/adni",
 	"ad_in": "AD",
 	"nc_in": "NC",
-	"volume_type": "whole",
 	"processes_num": -1,
 	"pre_split": true,
 	"pre_trainset_path": "DataSplit/trainset.csv",
@@ -14,11 +13,14 @@
 	"save_split": false,
 	"save_split_dir": "DataSplit",
 	"data_format": ".nii.gz",
-	"paras_json_path": "hyper_paras.json",
+	"hyper_paras_json_path": "hyper_paras.json",
 	"weights_save_dir": "weights",
 	"save_best_weights": true,
 	"logs_save_dir": "logs",
 	"results_save_dir": "results",
 	"test_weights": "last",
-    "pred_trainset": true
+    "pred_trainset": true,
+    "feat_paras_json_path": "feat_paras.json",
+    "best_models_dir": "best_models",
+    "features_dir": "features"
 }
