@@ -1,0 +1,51 @@
+{
+    "pre": {
+        "comment": "whole, training from scratch",
+        "weight_name": "pre.h5",
+        "model_name": "pyramid",
+        "out_dir": "pre",
+        "scale": "all"
+    },
+    "gpre": {
+        "comment": "gm, training from pre-trained model",
+        "weight_name": "gpre.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwpre",
+        "scale": "all"
+    },
+    "wpre": {
+        "comment": "wm, training from pre-trained model",
+        "weight_name": "wpre.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwpre",
+        "scale": "all"
+    },
+    "cpre": {
+        "comment": "csf, training from pre-trained model",
+        "weight_name": "cpre.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwpre",
+        "scale": "all"
+    },
+    "gnew": {
+        "comment": "gm, training from scratch",
+        "weight_name": "gnew.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwnew",
+        "scale": "all"
+    },
+    "wnew": {
+        "comment": "wm, training from scratch",
+        "weight_name": "wnew.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwnew",
+        "scale": "all"
+    },
+    "cnew": {
+        "comment": "csf, training from scratch",
+        "weight_name": "cnew.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwnew",
+        "scale": "all"
+    }
+}
