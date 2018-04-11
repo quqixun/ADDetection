@@ -7,10 +7,9 @@ import argparse
 from add_test import ADDTest
 from add_train import ADDTrain
 from add_dataset import ADDDataset
-from add_segment import ADDSegment
 
 
-def main(hyper_paras_name):
+def main(hyper_paras_name, volume_type):
 
     pre_paras_path = "pre_paras.json"
     pre_paras = json.load(open(pre_paras_path))
@@ -25,13 +24,9 @@ def main(hyper_paras_name):
     logs_save_dir = os.path.join(parent_dir, pre_paras["logs_save_dir"])
     results_save_dir = os.path.join(parent_dir, pre_paras["results_save_dir"])
 
-    # Preprocessing
-    # seg = ADDSegment(ad_dir, nc_dir)
-    # seg.run(processes=pre_paras["processes_num"])
-
     # Getting splitted dataset
     data = ADDDataset(ad_dir, nc_dir,
-                      volume_type=pre_paras["volume_type"],
+                      volume_type=volume_type,
                       train_prop=pre_paras["train_prop"],
                       valid_prop=pre_paras["valid_prop"],
                       random_state=pre_paras["random_state"],
@@ -45,7 +40,7 @@ def main(hyper_paras_name):
 
     # Training the model
     train = ADDTrain(paras_name=hyper_paras_name,
-                     paras_json_path=pre_paras["paras_json_path"],
+                     paras_json_path=pre_paras["hyper_paras_json_path"],
                      weights_save_dir=weights_save_dir,
                      logs_save_dir=logs_save_dir,
                      save_best_weights=pre_paras["save_best_weights"])
@@ -53,7 +48,7 @@ def main(hyper_paras_name):
 
     # Testing the model
     test = ADDTest(paras_name=hyper_paras_name,
-                   paras_json_path=pre_paras["paras_json_path"],
+                   paras_json_path=pre_paras["hyper_paras_json_path"],
                    weights_save_dir=weights_save_dir,
                    results_save_dir=results_save_dir,
                    test_weights=pre_paras["test_weights"],
@@ -66,9 +61,12 @@ def main(hyper_paras_name):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    help_str = "Select a set of hyper-parameters in hyper_paras.json"
+    help_str = "Select a set of hyper-parameters in hyper_paras.json."
     parser.add_argument("--paras", action="store", default="paras-1",
                         dest="hyper_paras_name", help=help_str)
+    help_str = "Select a volume type in ['whole', 'gm', 'wm', 'csf']."
+    parser.add_argument("--volume", action="store", default="whole",
+                        dest="volume_name", help=help_str)
 
     args = parser.parse_args()
-    main(args.hyper_paras_name)
+    main(args.hyper_paras_name, args.volume_type)
