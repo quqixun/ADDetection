@@ -39,6 +39,10 @@ class ADDDataset(object):
         self.pre_testset = pre_testset_path
         self.data_format = data_format
 
+        self.trainset = None
+        self.validset = None
+        self.testset = None
+
         self.train_x, self.train_y = None, None
         self.valid_x, self.valid_y = None, None
         self.test_x, self.test_y = None, None
@@ -47,17 +51,22 @@ class ADDDataset(object):
 
     def run(self, pre_split=False,
             save_split=False,
-            save_split_dir=None):
+            save_split_dir=None,
+            only_load_info=False):
         print("\nSplitting dataset to train, valide and test.\n")
-        trainset, validset, testset = \
+        self.trainset, self.validset, self.testset = \
             self._get_pre_datasplit() if pre_split else \
             self._get_new_datasplit()
 
-        self._load_dataset(trainset, validset, testset, self.volume_type)
+        if only_load_info:
+            return
+
+        self._load_dataset(self.trainset, self.validset,
+                           self.testset, self.volume_type)
 
         if save_split and (not pre_split):
             self.save_split_dir = save_split_dir
-            self._save_dataset(trainset, validset, testset)
+            self._save_dataset(self.trainset, self.validset, self.testset)
         return
 
     def _get_pre_datasplit(self):
