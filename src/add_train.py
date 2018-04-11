@@ -54,6 +54,11 @@ class ADDTrain(object):
         self.lr_start = self.paras["lr_start"]
         self.epochs_num = self.paras["epochs_num"]
         self.batch_size = self.paras["batch_size"]
+
+        self.pre_trained = False
+        if "pre_trained" in self.paras.keys():
+            self.pre_trained = self.paras["pre_trained"]
+
         return
 
     def _load_model(self):
@@ -74,9 +79,13 @@ class ADDTrain(object):
         return
 
     def _set_lr_scheduler(self, epoch):
-        lrs = [self.lr_start] * 50 + \
-              [self.lr_start * 0.1] * 50 + \
-              [self.lr_start * 0.01] * 50
+        if self.pre_trained:
+            lrs = [self.lr_start] * 25 + \
+                  [self.lr_start * 0.1] * 25
+        else:
+            lrs = [self.lr_start] * 50 + \
+                  [self.lr_start * 0.1] * 50 + \
+                  [self.lr_start * 0.01] * 50
         return lrs[epoch]
 
     def _set_callbacks(self):
