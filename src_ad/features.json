@@ -1,0 +1,34 @@
+{
+    "gm": {
+        "comment": "GM",
+        "weight_name": "pre-15.h5",
+        "seed": 325000,
+        "data_type": "adni_pve_sep",
+        "volume_type": "gm",
+        "model_type": "pyramid4"
+    },
+    "wm": {
+        "comment": "WM",
+        "weight_name": "pre-15.h5",
+        "seed": 325000,
+        "data_type": "adni_pve_sep",
+        "volume_type": "wm",
+        "model_type": "pyramid4"
+    },
+    "csf": {
+        "comment": "CSF",
+        "weight_name": "pre-15.h5",
+        "seed": 325000,
+        "data_type": "adni_pve_sep",
+        "volume_type": "csf",
+        "model_type": "pyramid4"
+    },
+    "whole": {
+        "comment": "whole",
+        "weight_name": "pre-15.h5",
+        "seed": 325000,
+        "data_type": "adni_pve_sep",
+        "volume_type": "whole",
+        "model_type": "pyramid4"
+    }
+}
