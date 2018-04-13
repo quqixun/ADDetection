@@ -6,6 +6,7 @@ import json
 import shutil
 from add_models import ADDModels
 
+from keras import backend as K
 from keras.optimizers import Adam
 from keras.callbacks import (CSVLogger,
                              TensorBoard,
@@ -145,6 +146,7 @@ class ADDTrain(object):
 
         self.model.save(self.last_weights_path)
         self._print_score()
+        K.clear_session()
 
         return
 
