@@ -1,5 +1,5 @@
 {
-	"data_dir": "data/adni",
+	"data_dir": "data/adni_subj",
 	"ad_in": "AD",
 	"nc_in": "NC",
 	"processes_num": -1,

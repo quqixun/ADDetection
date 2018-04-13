@@ -25,8 +25,8 @@
 		"bn_momentum": 0.99,
 		"initializer": "glorot_uniform",
 		"optimizer": "adam",
-		"lr_start": 5e-4,
-		"epochs_num": 150,
+		"lr_start": 1e-3,
+		"epochs_num": 100,
 		"batch_size": 8
 	}
 }
