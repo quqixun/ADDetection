@@ -21,7 +21,7 @@ class ADDDataset(object):
                  pre_trainset_path=None,
                  pre_validset_path=None,
                  pre_testset_path=None,
-                 data_format=".nii"):
+                 data_format=".nii.gz"):
         '''__INIT__
         '''
 
@@ -115,13 +115,13 @@ class ADDDataset(object):
 
     def _load_dataset(self, trainset, validset, testset, volume_type):
 
-        self.test_x, test_y = self.load_data(testset, "testset", volume_type)
+        self.test_x, test_y = self.load_data(testset, "test set", volume_type)
         self.test_y = to_categorical(test_y, num_classes=2)
 
-        self.valid_x, valid_y = self.load_data(validset, "validset", volume_type)
+        self.valid_x, valid_y = self.load_data(validset, "valid set", volume_type)
         self.valid_y = to_categorical(valid_y, num_classes=2)
 
-        train_x, train_y = self.load_data(trainset, "trainset", volume_type)
+        train_x, train_y = self.load_data(trainset, "train set", volume_type)
         if self.is_augment:
             train_x, train_y = self.augment(train_x, train_y)
         self.train_x = train_x
@@ -174,8 +174,8 @@ class ADDDataset(object):
         shuffle(subjects)
         subjects_paths = []
         for subject in subjects:
-            subject_dir = os.path.join(dir_path, subject)
-            subjects_paths.append([subject_dir, label])
+            subject_path = os.path.join(dir_path, subject)
+            subjects_paths.append([subject_path, label])
         return subjects_paths
 
     @staticmethod
@@ -192,24 +192,36 @@ class ADDDataset(object):
 
     @staticmethod
     def load_data(dataset, mode, volume_type):
+
+        def load_nii(nii_path):
+            volume = nib.load(nii_path).get_data()
+            volume = np.transpose(volume, axes=[2, 0, 1])
+            volume = np.rot90(volume, 2)
+
+            obj_idx = np.where(volume > 0)
+            volume_obj = volume[obj_idx]
+            obj_mean = np.mean(volume_obj)
+            obj_std = np.std(volume_obj)
+            volume_obj = (volume_obj - obj_mean) / obj_std
+            volume[obj_idx] = volume_obj
+            return volume
+
         x, y = [], []
         print("Loading {} data ...".format(mode))
         for subject in dataset:
-            subj_dir, label = subject[0], subject[1]
-            for scan in os.listdir(subj_dir):
-                scan_dir = os.path.join(subj_dir, scan)
-                volume_name = [p for p in os.listdir(scan_dir)
-                               if volume_type in p][0]
-                volume_path = os.path.join(scan_dir, volume_name)
-                volume = nib.load(volume_path).get_data()
-                volume = np.transpose(volume, axes=[2, 0, 1])
-                volume = np.rot90(volume, 2)
-
-                volume_obj = volume[volume > 0]
-                obj_mean = np.mean(volume_obj)
-                obj_std = np.std(volume_obj)
-                volume = (volume - obj_mean) / obj_std
-
+            subj_path, label = subject[0], subject[1]
+            if os.path.isdir(subj_path):
+                for scan in os.listdir(subj_path):
+                    scan_dir = os.path.join(subj_path, scan)
+                    volume_name = [p for p in os.listdir(scan_dir)
+                                   if volume_type in p][0]
+                    volume_path = os.path.join(scan_dir, volume_name)
+                    volume = load_nii(volume_path)
+                    volume = np.expand_dims(volume, axis=3)
+                    x.append(volume.astype(np.float32))
+                    y.append(label)
+            else:
+                volume = load_nii(subj_path)
                 volume = np.expand_dims(volume, axis=3)
                 x.append(volume.astype(np.float32))
                 y.append(label)
@@ -237,18 +249,18 @@ class ADDDataset(object):
 if __name__ == "__main__":
 
     parent_dir = os.path.dirname(os.getcwd())
-    data_dir = os.path.join(parent_dir, "data", "adni")
+    data_dir = os.path.join(parent_dir, "data", "adni_subj")
     ad_dir = os.path.join(data_dir, "AD")
     nc_dir = os.path.join(data_dir, "NC")
 
+    # Subject-saparated
     # Load and split dataset
     data = ADDDataset(ad_dir, nc_dir,
                       volume_type="whole",
                       train_prop=0.7,
                       valid_prop=0.15,
-                      random_state=0)
-    data.run(save_split=True,
-             save_split_dir="DataSplit")
+                      random_state=1)
+    data.run(save_split=False)
     print(data.train_x.shape, data.train_y.shape)
 
     # Load dataset which has been splitted
@@ -258,4 +270,18 @@ if __name__ == "__main__":
                       pre_validset_path="DataSplit/validset.csv",
                       pre_testset_path="DataSplit/testset.csv")
     data.run(pre_split=True)
+    print(data.train_x.shape, data.train_y.shape)
+
+    data_dir = os.path.join(parent_dir, "data", "adni")
+    ad_dir = os.path.join(data_dir, "AD")
+    nc_dir = os.path.join(data_dir, "NC")
+
+    # None subject-saparated
+    # Load and split dataset
+    data = ADDDataset(ad_dir, nc_dir,
+                      volume_type="whole",
+                      train_prop=0.7,
+                      valid_prop=0.15,
+                      random_state=0)
+    data.run(save_split=False)
     print(data.train_x.shape, data.train_y.shape)
