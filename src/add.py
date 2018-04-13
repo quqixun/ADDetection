@@ -66,7 +66,7 @@ if __name__ == "__main__":
                         dest="hyper_paras_name", help=help_str)
     help_str = "Select a volume type in ['whole', 'gm', 'wm', 'csf']."
     parser.add_argument("--volume", action="store", default="whole",
-                        dest="volume_name", help=help_str)
+                        dest="volume_type", help=help_str)
 
     args = parser.parse_args()
     main(args.hyper_paras_name, args.volume_type)
