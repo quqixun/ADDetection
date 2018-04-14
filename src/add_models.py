@@ -15,7 +15,7 @@ class ADDModels(object):
                  pooling="max",
                  l2_coeff=5e-5,
                  drop_rate=0.5,
-                 bn_momentum=0.9,
+                 bn_momentum=0.99,
                  initializer="glorot_uniform"):
         '''__INIT__
         '''
