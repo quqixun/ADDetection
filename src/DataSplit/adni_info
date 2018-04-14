@@ -1,0 +1,25 @@
+========================================
+
+Train:
+
+All Subjects: 235	All Scans: 843
+AD Subjects: 137	AD Scans: 421
+NC Subjects: 98		NC Scans: 422
+
+========================================
+
+Valid:
+
+All Subjects: 49	All Scans: 183
+AD Subjects: 29		AD Scans: 90
+NC Subjects: 20		NC Scans: 93
+
+========================================
+
+Test:
+
+All Subjects: 53	All Scans: 172
+AD Subjects: 32		AD Scans: 89
+NC Subjects: 21		NC Scans: 83
+
+========================================
