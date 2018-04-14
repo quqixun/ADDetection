@@ -1,0 +1,38 @@
+{
+	"refine-1": {
+		"fdir": "cgwpre",
+		"feat": ["gm", "csf"],
+		"fnum": 1024,
+		"select": true,
+		"xgb_paras": {
+			"booster": "gbtree",
+            "objective": "binary:logistic",
+            "n_jobs": 6,
+            "silent": true,
+            "max_depth": 6,
+            "learning_rate": 1e-1,
+            "n_estimators": 200,
+            "reg_lambda": 1e-4,
+            "subsample": 0.5,
+            "random_state": 72701
+		},
+		"xgb_fit_verbose": false,
+		"feat_threshold": 0,
+        "save_fs_idx_file": true,
+        "fs_idx_file_ext": "_fs.txt",
+        "mlp_runs_num": 10,
+        "mlp_hl_size": 256,
+        "fs_mlp_hl_size": 64,
+        "mlp_paras": {
+        	"batch_size": 32,
+            "max_iter": 100,
+            "alpha": 1e-4,
+            "solver": "sgd",
+            "verbose": 0,
+            "tol": 1e-5,
+            "activation": "relu",
+            "learning_rate_init": 1e-3,
+            "learning_rate": "adaptive"
+        }
+	}
+}
