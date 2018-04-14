@@ -1,6 +1,6 @@
 {
 	"paras-1": {
-	    "comment": "baseline",
+	    "comment": "train model from scratch",
 		"model_name": "pyramid",
 		"input_shape": [112, 96, 96, 1],
 		"scale": "all",
@@ -15,7 +15,7 @@
 		"batch_size": 8
 	},
 	"paras-2": {
-		"comment": "smaller learning rate",
+		"comment": "train model based on pre-trained model",
 		"model_name": "pyramid",
 		"input_shape": [112, 96, 96, 1],
 		"scale": "all",
@@ -27,6 +27,7 @@
 		"optimizer": "adam",
 		"lr_start": 1e-3,
 		"epochs_num": 100,
-		"batch_size": 8
+		"batch_size": 8,
+		"pre_trained": true
 	}
 }
