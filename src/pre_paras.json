@@ -1,5 +1,6 @@
 {
 	"data_dir": "data/adni_subj",
+	"subj_sapareted": true,
 	"ad_in": "AD",
 	"nc_in": "NC",
 	"processes_num": -1,
@@ -21,6 +22,8 @@
 	"test_weights": "last",
     "pred_trainset": true,
     "feat_paras_json_path": "feat_paras.json",
-    "best_models_dir": "best_models",
-    "features_dir": "features"
+    "best_models_dir": "best_weights",
+    "features_dir": "features",
+    "save_features": true,
+    "save_features_dir": "FeaturesIdx"
 }
