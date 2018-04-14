@@ -9,6 +9,7 @@ import numpy as np
 import nibabel as nib
 
 from tqdm import *
+from keras.models import Model
 from add_models import ADDModels
 from add_dataset import ADDDataset
 
@@ -28,16 +29,15 @@ class ADDFeatures(object):
 
         self.feat_dir = os.path.join(features_dir, self.out_dir)
         self.create_dir(features_dir, rm=False)
-        self.weight_path = os.path.join(best_models_dir, self.weight_path)
+        self.weight_path = os.path.join(best_models_dir, self.weight_name)
 
         return
 
     def _resolve_paras(self):
-        # Parameters to construct model
-        self.model_name = self.paras["model_name"]
         self.weight_name = self.paras["weight_name"]
+        self.model_name = self.paras["model_name"]
         self.scale = self.paras["scale"]
-        self.out_dir = self["out_dir"]
+        self.out_dir = self.paras["out_dir"]
         return
 
     def run(self):
@@ -50,10 +50,10 @@ class ADDFeatures(object):
 
     def _extract(self):
 
-        for data, mode in zip(dataset, desc_list):
+        for data, mode in zip(self.dataset, self.desc_list):
             print("Extract features from ", mode, " set")
             feats_out_dir = os.path.join(self.feat_dir, mode)
-            create_dir(feats_out_dir, rm=False)
+            self.create_dir(feats_out_dir, rm=False)
 
             model = ADDModels(model_name=self.model_name,
                               scale=self.scale).model
@@ -66,27 +66,32 @@ class ADDFeatures(object):
                                 outputs=model.get_layer("fc2_bn").output)
 
             for subj in tqdm(data):
-                volume_path = subj[0]
-                volume_info = volume_path.split("/")
+                subj_dir, label = subj[0], subj[1]
+                for scan in os.listdir(subj_dir):
+                    scan_dir = os.path.join(subj_dir, scan)
+                    volume_name = [p for p in os.listdir(scan_dir)
+                                   if self.volume_type in p][0]
+                    volume_path = os.path.join(scan_dir, volume_name)
+                    volume_info = volume_path.split("/")
 
-                label = volume_info[-4]
-                ID = volume_info[-3]
-                idx = volume_info[-2]
-                out_dir = os.path.join(self.feat_dir, label, ID, idx)
-                self.create_dir(out_dir, rm=False)
+                    label = volume_info[-4]
+                    ID = volume_info[-3]
+                    idx = volume_info[-2]
+                    out_dir = os.path.join(feats_out_dir, label, ID, idx)
+                    self.create_dir(out_dir, rm=False)
 
-                volume = load_nii(volume_path)
-                volume = np.expand_dims(volume, axis=0)
-                volume = np.expand_dims(volume, axis=4)
+                    volume = self.load_nii(volume_path)
+                    volume = np.expand_dims(volume, axis=0)
+                    volume = np.expand_dims(volume, axis=4)
 
-                fc1024 = fc1024_dense.predict(volume)
-                fc256 = fc256_dense.predict(volume)
+                    fc1024 = fc1024_dense.predict(volume)
+                    fc256 = fc256_dense.predict(volume)
 
-                fc1024_path = os.path.join(out_dir, self.volume_type + "_1024.npy")
-                fc256_path = os.path.join(out_dir, self.volume_type + "_256.npy")
+                    fc1024_path = os.path.join(out_dir, self.volume_type + "_1024.npy")
+                    fc256_path = os.path.join(out_dir, self.volume_type + "_256.npy")
 
-                np.save(fc1024_path, fc1024)
-                np.save(fc256_path, fc256)
+                    np.save(fc1024_path, fc1024)
+                    np.save(fc256_path, fc256)
 
         return
 
@@ -110,8 +115,12 @@ class ADDFeatures(object):
         volume = nib.load(path).get_data()
         volume = np.transpose(volume, axes=[2, 0, 1])
         volume = np.rot90(volume, 2)
-        wmean, wstd = np.mean(volume), np.std(volume)
-        volume = (volume - wmean) / wstd
+        obj_idx = np.where(volume > 0)
+        volume_obj = volume[obj_idx]
+        obj_mean = np.mean(volume_obj)
+        obj_std = np.std(volume_obj)
+        volume_obj = (volume_obj - obj_mean) / obj_std
+        volume[obj_idx] = volume_obj
         return volume
 
 
@@ -130,6 +139,7 @@ def main(feat_paras_name, volume_type):
 
     # Load dataset which has been splitted
     data = ADDDataset(ad_dir, nc_dir,
+                      subj_sapareted=pre_paras["subj_sapareted"],
                       volume_type=volume_type,
                       pre_trainset_path=pre_paras["pre_trainset_path"],
                       pre_validset_path=pre_paras["pre_validset_path"],
