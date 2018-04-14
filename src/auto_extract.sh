@@ -12,3 +12,7 @@ python add_features.py --paras=cpre --volume=csf
 python add_features.py --paras=gnew --volume=gm
 python add_features.py --paras=wnew --volume=wm
 python add_features.py --paras=cnew --volume=csf
+
+python add_features.py --paras=gbest --volume=gm
+python add_features.py --paras=wbest --volume=wm
+python add_features.py --paras=cbest --volume=csf
