@@ -47,5 +47,26 @@
         "model_name": "pyramid",
         "out_dir": "cgwnew",
         "scale": "all"
+    },
+    "gbest": {
+        "comment": "gm, training from scratch",
+        "weight_name": "gpre.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwbest",
+        "scale": "all"
+    },
+    "wbest": {
+        "comment": "wm, training from scratch",
+        "weight_name": "wpre.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwbest",
+        "scale": "all"
+    },
+    "cbest": {
+        "comment": "csf, training from scratch",
+        "weight_name": "cnew.h5",
+        "model_name": "pyramid",
+        "out_dir": "cgwbest",
+        "scale": "all"
     }
 }
