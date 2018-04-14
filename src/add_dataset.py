@@ -13,6 +13,7 @@ class ADDDataset(object):
 
     def __init__(self,
                  ad_dir, nc_dir,
+                 subj_sapareted=False,
                  volume_type="whole",
                  train_prop=0.7,
                  valid_prop=0.15,
@@ -25,6 +26,7 @@ class ADDDataset(object):
         '''__INIT__
         '''
 
+        self.subj_sep = subj_sapareted
         self.ad_dir = ad_dir
         self.nc_dir = nc_dir
         self.volume_type = volume_type
@@ -55,7 +57,7 @@ class ADDDataset(object):
             only_load_info=False):
         print("\nSplitting dataset to train, valide and test.\n")
         self.trainset, self.validset, self.testset = \
-            self._get_pre_datasplit() if pre_split else \
+            self._get_pre_datasplit() if (pre_split and self.subj_sep) else \
             self._get_new_datasplit()
 
         if only_load_info:
@@ -256,6 +258,7 @@ if __name__ == "__main__":
     # Subject-saparated
     # Load and split dataset
     data = ADDDataset(ad_dir, nc_dir,
+                      subj_sapareted=True,
                       volume_type="whole",
                       train_prop=0.7,
                       valid_prop=0.15,
@@ -265,6 +268,7 @@ if __name__ == "__main__":
 
     # Load dataset which has been splitted
     data = ADDDataset(ad_dir, nc_dir,
+                      subj_sapareted=True,
                       volume_type="whole",
                       pre_trainset_path="DataSplit/trainset.csv",
                       pre_validset_path="DataSplit/validset.csv",
@@ -279,9 +283,10 @@ if __name__ == "__main__":
     # None subject-saparated
     # Load and split dataset
     data = ADDDataset(ad_dir, nc_dir,
+                      subj_sapareted=False,
                       volume_type="whole",
                       train_prop=0.7,
                       valid_prop=0.15,
                       random_state=0)
-    data.run(save_split=False)
+    data.run(pre_split=False, save_split=False)
     print(data.train_x.shape, data.train_y.shape)

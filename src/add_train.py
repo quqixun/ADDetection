@@ -171,12 +171,15 @@ if __name__ == "__main__":
     from add_dataset import ADDDataset
 
     parent_dir = os.path.dirname(os.getcwd())
-    data_dir = os.path.join(parent_dir, "data", "adni")
+    data_dir = os.path.join(parent_dir, "data", "adni_subj")
     ad_dir = os.path.join(data_dir, "AD")
     nc_dir = os.path.join(data_dir, "NC")
 
+    volume_type = "whole"
+
     data = ADDDataset(ad_dir, nc_dir,
-                      volume_type="whole",
+                      subj_sapareted=True,
+                      volume_type=volume_type,
                       pre_trainset_path="DataSplit/trainset.csv",
                       pre_validset_path="DataSplit/validset.csv",
                       pre_testset_path="DataSplit/testset.csv")
@@ -184,8 +187,8 @@ if __name__ == "__main__":
 
     paras_name = "paras-1"
     paras_json_path = "paras.json"
-    weights_save_dir = os.path.join(parent_dir, "weights")
-    logs_save_dir = os.path.join(parent_dir, "logs")
+    weights_save_dir = os.path.join(parent_dir, "weights", volume_type)
+    logs_save_dir = os.path.join(parent_dir, "logs", volume_type)
 
     train = ADDTrain(paras_name=paras_name,
                      paras_json_path=paras_json_path,

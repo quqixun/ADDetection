@@ -20,12 +20,13 @@ def main(hyper_paras_name, volume_type):
     ad_dir = os.path.join(data_dir, pre_paras["ad_in"])
     nc_dir = os.path.join(data_dir, pre_paras["nc_in"])
 
-    weights_save_dir = os.path.join(parent_dir, pre_paras["weights_save_dir"])
-    logs_save_dir = os.path.join(parent_dir, pre_paras["logs_save_dir"])
-    results_save_dir = os.path.join(parent_dir, pre_paras["results_save_dir"])
+    weights_save_dir = os.path.join(parent_dir, pre_paras["weights_save_dir"], volume_type)
+    logs_save_dir = os.path.join(parent_dir, pre_paras["logs_save_dir"], volume_type)
+    results_save_dir = os.path.join(parent_dir, pre_paras["results_save_dir"], volume_type)
 
     # Getting splitted dataset
     data = ADDDataset(ad_dir, nc_dir,
+                      subj_sapareted=pre_paras["subj_sapareted"],
                       volume_type=volume_type,
                       train_prop=pre_paras["train_prop"],
                       valid_prop=pre_paras["valid_prop"],
