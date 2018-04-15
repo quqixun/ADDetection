@@ -192,6 +192,7 @@ def main(hyper_paras_name, volume_type):
 
     weights_save_dir = os.path.join(parent_dir, pre_paras["weights_save_dir"], volume_type)
     logs_save_dir = os.path.join(parent_dir, pre_paras["logs_save_dir"], volume_type)
+    pre_trained_path = os.path.join(parent_dir, pre_paras["pre_trained_path"])
 
     # Getting splitted dataset
     data = ADDDataset(ad_dir, nc_dir,
@@ -213,7 +214,8 @@ def main(hyper_paras_name, volume_type):
                      paras_json_path=pre_paras["hyper_paras_json_path"],
                      weights_save_dir=weights_save_dir,
                      logs_save_dir=logs_save_dir,
-                     save_best_weights=pre_paras["save_best_weights"])
+                     save_best_weights=pre_paras["save_best_weights"],
+                     pre_trained_path=pre_trained_path)
     train.run(data)
 
     return
