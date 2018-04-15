@@ -23,10 +23,11 @@ def main(hyper_paras_name, volume_type):
     weights_save_dir = os.path.join(parent_dir, pre_paras["weights_save_dir"], volume_type)
     logs_save_dir = os.path.join(parent_dir, pre_paras["logs_save_dir"], volume_type)
     results_save_dir = os.path.join(parent_dir, pre_paras["results_save_dir"], volume_type)
+    pre_trained_path = os.path.join(parent_dir, pre_paras["pre_trained_path"])
 
     # Getting splitted dataset
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=pre_paras["subj_sapareted"],
+                      subj_separated=pre_paras["subj_separated"],
                       volume_type=volume_type,
                       train_prop=pre_paras["train_prop"],
                       valid_prop=pre_paras["valid_prop"],
@@ -44,7 +45,8 @@ def main(hyper_paras_name, volume_type):
                      paras_json_path=pre_paras["hyper_paras_json_path"],
                      weights_save_dir=weights_save_dir,
                      logs_save_dir=logs_save_dir,
-                     save_best_weights=pre_paras["save_best_weights"])
+                     save_best_weights=pre_paras["save_best_weights"],
+                     pre_trained_path=pre_trained_path)
     train.run(data)
 
     # Testing the model
@@ -60,6 +62,9 @@ def main(hyper_paras_name, volume_type):
 
 
 if __name__ == "__main__":
+
+    # Command line
+    # python add.py --paras=paras-1 --volume=whole
 
     parser = argparse.ArgumentParser()
     help_str = "Select a set of hyper-parameters in hyper_paras.json."
