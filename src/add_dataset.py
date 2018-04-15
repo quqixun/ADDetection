@@ -13,7 +13,7 @@ class ADDDataset(object):
 
     def __init__(self,
                  ad_dir, nc_dir,
-                 subj_sapareted=False,
+                 subj_separated=False,
                  volume_type="whole",
                  train_prop=0.7,
                  valid_prop=0.15,
@@ -26,7 +26,7 @@ class ADDDataset(object):
         '''__INIT__
         '''
 
-        self.subj_sep = subj_sapareted
+        self.subj_sep = subj_separated
         self.ad_dir = ad_dir
         self.nc_dir = nc_dir
         self.volume_type = volume_type
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     # Subject-saparated
     # Load and split dataset
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=True,
+                      subj_separated=True,
                       volume_type="whole",
                       train_prop=0.7,
                       valid_prop=0.15,
@@ -268,7 +268,7 @@ if __name__ == "__main__":
 
     # Load dataset which has been splitted
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=True,
+                      subj_separated=True,
                       volume_type="whole",
                       pre_trainset_path="DataSplit/trainset.csv",
                       pre_validset_path="DataSplit/validset.csv",
@@ -280,10 +280,9 @@ if __name__ == "__main__":
     ad_dir = os.path.join(data_dir, "AD")
     nc_dir = os.path.join(data_dir, "NC")
 
-    # None subject-saparated
-    # Load and split dataset
+    # Load and split non-subject-separated dataset
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=False,
+                      subj_separated=False,
                       volume_type="whole",
                       train_prop=0.7,
                       valid_prop=0.15,

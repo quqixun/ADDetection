@@ -139,7 +139,7 @@ def main(feat_paras_name, volume_type):
 
     # Load dataset which has been splitted
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=pre_paras["subj_sapareted"],
+                      subj_separated=pre_paras["subj_separated"],
                       volume_type=volume_type,
                       pre_trainset_path=pre_paras["pre_trainset_path"],
                       pre_validset_path=pre_paras["pre_validset_path"],
