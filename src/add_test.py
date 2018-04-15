@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import json
 import shutil
+import argparse
 import numpy as np
 import pandas as pd
 from add_models import ADDModels
@@ -149,34 +150,61 @@ class ADDTest(object):
         return
 
 
-if __name__ == "__main__":
+def main(hyper_paras_name, volume_type):
 
     from add_dataset import ADDDataset
 
+    pre_paras_path = "pre_paras.json"
+    pre_paras = json.load(open(pre_paras_path))
+
     parent_dir = os.path.dirname(os.getcwd())
-    data_dir = os.path.join(parent_dir, "data", "adni_subj")
-    ad_dir = os.path.join(data_dir, "AD")
-    nc_dir = os.path.join(data_dir, "NC")
+    data_dir = os.path.join(parent_dir, pre_paras["data_dir"])
 
-    volume_type = "whole"
+    ad_dir = os.path.join(data_dir, pre_paras["ad_in"])
+    nc_dir = os.path.join(data_dir, pre_paras["nc_in"])
 
+    weights_save_dir = os.path.join(parent_dir, pre_paras["weights_save_dir"], volume_type)
+    results_save_dir = os.path.join(parent_dir, pre_paras["results_save_dir"], volume_type)
+
+    # Getting splitted dataset
     data = ADDDataset(ad_dir, nc_dir,
-                      subj_sapareted=True,
+                      subj_separated=pre_paras["subj_separated"],
                       volume_type=volume_type,
-                      pre_trainset_path="DataSplit/trainset.csv",
-                      pre_validset_path="DataSplit/validset.csv",
-                      pre_testset_path="DataSplit/testset.csv")
-    data.run(pre_split=True)
+                      train_prop=pre_paras["train_prop"],
+                      valid_prop=pre_paras["valid_prop"],
+                      random_state=pre_paras["random_state"],
+                      pre_trainset_path=pre_paras["pre_trainset_path"],
+                      pre_validset_path=pre_paras["pre_validset_path"],
+                      pre_testset_path=pre_paras["pre_testset_path"],
+                      data_format=pre_paras["data_format"])
+    data.run(pre_split=pre_paras["pre_split"],
+             save_split=pre_paras["save_split"],
+             save_split_dir=pre_paras["save_split_dir"])
 
-    paras_name = "paras-1"
-    paras_json_path = "hyper_paras.json"
-    weights_save_dir = os.path.join(parent_dir, "weights", volume_type)
-    results_save_dir = os.path.join(parent_dir, "results", volume_type)
-
-    test = ADDTest(paras_name=paras_name,
-                   paras_json_path=paras_json_path,
+    # Testing the model
+    test = ADDTest(paras_name=hyper_paras_name,
+                   paras_json_path=pre_paras["hyper_paras_json_path"],
                    weights_save_dir=weights_save_dir,
                    results_save_dir=results_save_dir,
-                   test_weights="last",
-                   pred_trainset=True)
+                   test_weights=pre_paras["test_weights"],
+                   pred_trainset=pre_paras["pred_trainset"])
     test.run(data)
+
+    return
+
+
+if __name__ == "__main__":
+
+    # Command line
+    # python add_test.py --paras=paras-1 --volume=whole
+
+    parser = argparse.ArgumentParser()
+    help_str = "Select a set of hyper-parameters in hyper_paras.json."
+    parser.add_argument("--paras", action="store", default="paras-1",
+                        dest="hyper_paras_name", help=help_str)
+    help_str = "Select a volume type in ['whole', 'gm', 'wm', 'csf']."
+    parser.add_argument("--volume", action="store", default="whole",
+                        dest="volume_type", help=help_str)
+
+    args = parser.parse_args()
+    main(args.hyper_paras_name, args.volume_type)
