@@ -1,5 +1,23 @@
 #!/bin/sh
 
+
+# Alzheimer's Disease Detection
+# Commands for training and testing models.
+# Author: Qixun QU
+# Copyleft: MIT Licience
+
+#     ,,,         ,,,
+#   ;"   ';     ;'   ",
+#   ;  @.ss$$$$$$s.@  ;
+#   `s$$$$$$$$$$$$$$$'
+#   $$$$$$$$$$$$$$$$$$
+#  $$$$P""Y$$$Y""W$$$$$
+#  $$$$  p"$$$"q  $$$$$
+#  $$$$  .$$$$$.  $$$$'
+#   $$$DaU$$O$$DaU$$$'
+#    '$$$$'.^.'$$$$'
+#       '&$$$$$&'
+
 #
 # Section 1
 #
@@ -23,10 +41,11 @@ python add.py --paras=paras-2 --volume=csf
 # To train the model using non-separated samples,
 # in pre_paras.json:
 # - change "data_dir" to the directory which
-#   contains non-separated samples
+#   contains non-separated samples, in this case,
+#   is "data/adni".
 #   NOTE: not the absolute path, but the relative
 #         path within project directory
-# - change "subj_separated" to true
+# - change "subj_separated" to False
 
 # python add.py --paras=paras-3 --volume=whole
 
