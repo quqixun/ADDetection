@@ -25,6 +25,8 @@ import shutil
 import argparse
 import numpy as np
 import pandas as pd
+
+from keras import backend as K
 from add_models import ADDModels
 from sklearn.metrics import (log_loss,
                              roc_curve,
@@ -237,6 +239,9 @@ class ADDTest(object):
         self._pred_evaluate(data.valid_x, data.valid_y, "valid")
         # Predict and evluate on testing set
         self._pred_evaluate(data.test_x, data.test_y, "test")
+
+        # Destroy the current TF graph
+        K.clear_session()
 
         return
 

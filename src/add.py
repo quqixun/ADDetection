@@ -39,12 +39,12 @@ def main(hyper_paras_name, volume_type):
         -------
 
         - hyper_paras_name: string, the name of hyperparanters set,
-                            which can be found in hyper-paras.json.
+                            which can be found in hyper_paras.json.
         - volume_type: string, one of ["whole", "gm", "wm", "csf"].
 
     '''
 
-    # Basic settings in pre-paras.json, including
+    # Basic settings in pre_paras.json, including
     # 1. directory paths for input and output
     # 2. necessary information for splitting dataset
     pre_paras_path = "pre_paras.json"
@@ -67,7 +67,7 @@ def main(hyper_paras_name, volume_type):
     # Set directory where saves pre-trained model
     pre_trained_path = os.path.join(parent_dir, pre_paras["pre_trained_path"])
 
-    # Getting splitted dataset
+    # Split dataset
     data = ADDDataset(ad_dir, nc_dir,
                       subj_separated=pre_paras["subj_separated"],
                       volume_type=volume_type,

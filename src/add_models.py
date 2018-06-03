@@ -171,6 +171,7 @@ class ADDModels(object):
         # Dense + Batch normalization
         fc1 = self._dense(fts_dp, 256, "relu", name)
         fc1 = BatchNormalization(momentum=self.bn_momentum, name=name + "_bn")(fc1)
+
         return fc1
 
     def _pyramid(self):

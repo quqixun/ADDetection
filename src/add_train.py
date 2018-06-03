@@ -23,9 +23,9 @@ import os
 import json
 import shutil
 import argparse
-from add_models import ADDModels
 
 from keras import backend as K
+from add_models import ADDModels
 from keras.optimizers import Adam
 from keras.callbacks import (CSVLogger,
                              TensorBoard,
@@ -160,6 +160,7 @@ class ADDTrain(object):
             Use "Adam" in this project.
 
         '''
+
         if self.optimizer == "adam":
             self.opt_fcn = Adam(lr=self.lr_start, epsilon=1e-8,
                                 decay=1e-6, amsgrad=True)
@@ -185,6 +186,7 @@ class ADDTrain(object):
             - Learning rate, a float, for nth training epoch.
 
         '''
+
         if self.pre_trained:
             lrs = [self.lr_start] * 25 + \
                   [self.lr_start * 0.1] * 25
@@ -192,6 +194,7 @@ class ADDTrain(object):
             lrs = [self.lr_start] * 50 + \
                   [self.lr_start * 0.1] * 50 + \
                   [self.lr_start * 0.01] * 50
+
         return lrs[epoch]
 
     def _set_callbacks(self):
@@ -207,8 +210,7 @@ class ADDTrain(object):
 
         # Save learning curves in csv file while training
         csv_logger = CSVLogger(self.curves_path,
-                               append=True,
-                               separator=",")
+                               append=True, separator=",")
 
         # Set learning rate scheduler
         lr_scheduler = LearningRateScheduler(self._set_lr_scheduler)

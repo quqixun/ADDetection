@@ -59,8 +59,8 @@ class ADDDataset(object):
 
             - ad_dir: string, path of directory contains AD subjects.
             - nc_dir: string, path of directory contains NC subjects.
-            - subj_separated: boolean, partition scans according to
-                              subjects or randomly partition all scans.
+            - subj_separated: boolean, True: partition scans according to
+                              subjects or False: randomly partition all scans.
                               Default is True.
             - volume_type: string, type of brain tissue, "whole", "gm",
                            "wm" or "csf". Default is "whole".
@@ -145,6 +145,7 @@ class ADDDataset(object):
             # Save new partitions into csv files
             self.save_split_dir = save_split_dir
             self._save_dataset()
+
         return
 
     def _get_pre_datasplit(self):
@@ -464,7 +465,7 @@ class ADDDataset(object):
         # Helper function to load images
         # and do normalization
         def load_nii(nii_path):
-            # Load images and rotate to standard space
+            # Load image and rotate it to standard space
             volume = nib.load(nii_path).get_data()
             volume = np.transpose(volume, axes=[2, 0, 1])
             volume = np.rot90(volume, 2)
