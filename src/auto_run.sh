@@ -21,24 +21,26 @@
 #
 # Section 1
 #
-# Train and test model
+# Train and test model using subject-separated samples
 # Command:
 # python add.py --paras=paras_name --volume=volume_type
 # Parameters:
 # - paras: hyperparameters set in hyper_paras.json
 # - volume: one type volume of "whole", "gm", "wm" or "csf"
 
+# Train model from scratch
 # python add.py --paras=paras-1 --volume=whole
 # python add.py --paras=paras-1 --volume=gm
 # python add.py --paras=paras-1 --volume=wm
 # python add.py --paras=paras-1 --volume=csf
 
+# Train model based on pre-trained weights
 python add.py --paras=paras-2 --volume=gm
 python add.py --paras=paras-2 --volume=wm
 python add.py --paras=paras-2 --volume=csf
 
 
-# To train the model using non-separated samples,
+# To train the model using non-subject-separated samples,
 # in pre_paras.json:
 # - change "data_dir" to the directory which
 #   contains non-separated samples, in this case,

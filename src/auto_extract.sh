@@ -46,19 +46,25 @@
 # - volume: one type volume of "whole", "gm", "wm" or "csf"
 
 
+# Extract features from the model trained by whole brain
 python add_features.py --paras=pre --volume=whole
 python add_features.py --paras=pre --volume=gm
 python add_features.py --paras=pre --volume=wm
 python add_features.py --paras=pre --volume=csf
 
+# Extract features from the model trained by
+# GN, WM or CSF from pre-trained weights
 python add_features.py --paras=gpre --volume=gm
 python add_features.py --paras=wpre --volume=wm
 python add_features.py --paras=cpre --volume=csf
 
+# Extract features from the model trained by
+# GN, WM or CSF from scratch
 python add_features.py --paras=gnew --volume=gm
 python add_features.py --paras=wnew --volume=wm
 python add_features.py --paras=cnew --volume=csf
 
+# Extract features from the best model trained
 python add_features.py --paras=gbest --volume=gm
 python add_features.py --paras=wbest --volume=wm
 python add_features.py --paras=cbest --volume=csf
