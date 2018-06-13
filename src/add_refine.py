@@ -125,8 +125,8 @@ class ADDRefine(object):
         if self.select:
             # Apply XGBoost to select features
             print("Feature selection by XGB")
-            xgb_clf, fs_idx = self._feature_selection(X_train, y_train,
-                                                      X_valid, y_valid)
+            xgb_clf, fs_idx, importance = self._feature_selection(X_train, y_train,
+                                                                  X_valid, y_valid)
             self.evaluate(xgb_clf, X_train, y_train, "Train")
             self.evaluate(xgb_clf, X_valid, y_valid, "Valid")
             self.evaluate(xgb_clf, X_test, y_test, "Test")
@@ -138,7 +138,7 @@ class ADDRefine(object):
 
             if save_features:
                 # Save indices of selected features into txt file
-                self._save_feat_idx(fs_idx, save_features_dir)
+                self._save_features(fs_idx, importance, save_features_dir)
 
         # Set the number of neurons in hidden layer of MLP
         # Without feature selection: 256
@@ -212,6 +212,7 @@ class ADDRefine(object):
 
             - clf: instance of XGBClassifier, trian model.
             - fs_idx: list, indecies of selected features.
+            - importance: list, importance of selected features.
 
         '''
 
@@ -223,9 +224,10 @@ class ADDRefine(object):
         # Extract indices of important features
         importance = clf.feature_importances_
         fs_idx = np.where(importance > self.threshold)[0]
+        importance = importance[fs_idx]
         print("Number of important features: ", len(fs_idx))
 
-        return clf, fs_idx
+        return clf, fs_idx, importance
 
     def _neural_network(self, X, y):
         '''_NEURAL_NETWORK
@@ -255,7 +257,7 @@ class ADDRefine(object):
 
         return clf
 
-    def _save_feat_idx(self, fs_idx, save_dir):
+    def _save_features(self, fs_idx, importance, save_dir):
         '''_SAVEFEAT_IDX
 
             Save indices of selected features into txt file.
@@ -264,6 +266,7 @@ class ADDRefine(object):
             -------
 
             - fs_idx: list, indices of important features.
+            - importance: list, importance of selected features.
             - save_dir: string, path of directory to save file.
 
             Output:
@@ -288,8 +291,8 @@ class ADDRefine(object):
 
         # Write file
         with open(feat_idx_path, "w") as idx_file:
-            for idx in fs_idx:
-                idx_file.write("{}\n".format(idx))
+            for idx, ip in zip(fs_idx, importance):
+                idx_file.write("{},{}\n".format(idx, ip))
 
         return
 
