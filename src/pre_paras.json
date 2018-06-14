@@ -23,6 +23,7 @@
     "pred_trainset": true,
     "feat_paras_json_path": "feat_paras.json",
     "pre_trained_path": "best_weights/pre.h5",
+    "best_models_dir": "best_weights",
     "features_dir": "features",
     "save_features": true,
     "save_features_dir": "FeaturesIdx"
