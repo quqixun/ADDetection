@@ -278,6 +278,10 @@ class ADDDataset(object):
 
         '''
 
+        # Check if the save_split_dir is exist
+        if not os.path.isdir(self.save_split_dir):
+            os.makedirs(self.save_split_dir)
+
         # Generate paths for output csv files
         ap = str(self.random_state) + ".csv"
         trainset_path = os.path.join(self.save_split_dir, "trainset_" + ap)
